@@ -1,0 +1,40 @@
+.about {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.about h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 2rem;
+}
+
+.about p {
+  color: #6b7280;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.tech-list,
+.architecture-list,
+.api-features {
+  list-style: disc;
+  padding-left: 1.5rem;
+  color: #6b7280;
+  line-height: 1.8;
+}
+
+.tech-list li,
+.architecture-list li,
+.api-features li {
+  margin-bottom: 0.5rem;
+}
+
+.tech-list strong {
+  color: #111827;
+}
+
+.about .card {
+  margin-bottom: 1.5rem;
+}
