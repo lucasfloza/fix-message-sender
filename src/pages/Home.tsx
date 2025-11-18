@@ -2,12 +2,14 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Card from '../components/common/Card';
 import Button from '../components/common/Button';
+import LightningLogo from '../components/common/LightningLogo';
 import './Home.css';
 
 const Home: React.FC = () => {
   return (
     <div className="home">
       <div className="hero">
+        <LightningLogo />
         <h1>Welcome to FIX Message Sender</h1>
         <p className="hero-description">
           A modern, scalable React application for sending and managing FIX
