@@ -3,6 +3,7 @@ import Layout from './components/layout/Layout';
 import Home from './pages/Home';
 import Messages from './pages/Messages';
 import About from './pages/About';
+import BuildFix from './pages/BuildFix';
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/messages" element={<Messages />} />
+          <Route path="/build" element={<BuildFix />} />
           <Route path="/about" element={<About />} />
         </Routes>
       </Layout>

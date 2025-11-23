@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Card from '../components/common/Card';
-import Button from '../components/common/Button';
-import LightningLogo from '../components/common/LightningLogo';
+import Card from '../components/card/Card';
+import Button from '../components/button/Button';
+import LightningLogo from '../components/lightning-logo/LightningLogo';
 import './Home.css';
 
 const Home: React.FC = () => {
@@ -18,6 +18,11 @@ const Home: React.FC = () => {
         <div className="hero-actions">
           <Link to="/messages">
             <Button size="large">View Messages</Button>
+          </Link>
+          <Link to="/build">
+            <Button size="large" variant="secondary">
+              Build FIX
+            </Button>
           </Link>
         </div>
       </div>

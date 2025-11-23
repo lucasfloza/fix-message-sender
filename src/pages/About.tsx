@@ -1,5 +1,5 @@
 import React from 'react';
-import Card from '../components/common/Card';
+import Card from '../components/card/Card';
 import './About.css';
 
 const About: React.FC = () => {
@@ -31,7 +31,9 @@ const About: React.FC = () => {
       </Card>
 
       <Card title="Architecture">
-        <p>This project follows modern best practices for React applications:</p>
+        <p>
+          This project follows modern best practices for React applications:
+        </p>
         <ul className="architecture-list">
           <li>Component-based architecture with reusable UI components</li>
           <li>Custom hooks for shared logic and API integration</li>

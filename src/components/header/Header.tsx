@@ -16,6 +16,9 @@ const Header: React.FC = () => {
           <Link to="/messages" className="nav-link">
             Messages
           </Link>
+          <Link to="/build" className="nav-link">
+            Build FIX
+          </Link>
           <Link to="/about" className="nav-link">
             About
           </Link>
