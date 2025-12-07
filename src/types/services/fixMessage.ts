@@ -14,10 +14,3 @@ export interface CreateFixMessageRequest {
   target: string;
   content: string;
 }
-
-export interface FixTagEntry {
-  tag: string;
-  value: string;
-  name?: string;
-  description?: string;
-}
