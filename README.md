@@ -2,6 +2,8 @@
 
 A modern, scalable React + TypeScript application for sending and managing FIX messages through a Java REST API backend.
 
+🌐 **Live Demo**: [https://lucasfloza.github.io/fix-message-sender/](https://lucasfloza.github.io/fix-message-sender/)
+
 ## 🚀 Features
 
 - **Modern Stack**: Built with React 19, TypeScript, and Vite for optimal performance
@@ -12,6 +14,7 @@ A modern, scalable React + TypeScript application for sending and managing FIX m
 - **Routing**: Client-side routing with React Router v6
 - **Code Quality**: ESLint and Prettier for consistent code style
 - **Environment Configuration**: Easy environment-based configuration
+- **Automated Deployment**: GitHub Actions pipeline for continuous deployment to GitHub Pages
 
 ## 📁 Project Structure
 
@@ -204,6 +207,37 @@ The project uses TypeScript with strict mode enabled. Configuration files:
 - `tsconfig.json` - Base TypeScript config
 - `tsconfig.app.json` - App-specific config
 - `tsconfig.node.json` - Node-specific config
+
+## 🚀 Deployment
+
+### GitHub Pages
+
+This project is automatically deployed to GitHub Pages using GitHub Actions.
+
+**Live URL**: [https://lucasfloza.github.io/fix-message-sender/](https://lucasfloza.github.io/fix-message-sender/)
+
+#### Automatic Deployment
+
+The deployment happens automatically when you push to the `main` branch:
+
+1. Push your changes to the `main` branch
+2. GitHub Actions will automatically build and deploy the site
+3. The site will be available at the URL above within a few minutes
+
+#### Manual Deployment
+
+You can also trigger a deployment manually:
+
+1. Go to the "Actions" tab in GitHub
+2. Select the "Deploy to GitHub Pages" workflow
+3. Click "Run workflow"
+
+#### Configuration
+
+The deployment is configured in `.github/workflows/deploy.yml` and uses:
+- Vite's build system with base path `/fix-message-sender/`
+- GitHub Pages deployment action
+- Automatic artifact upload
 
 ## 🏗️ Best Practices Implemented
 
