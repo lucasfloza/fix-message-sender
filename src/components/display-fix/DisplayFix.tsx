@@ -1,8 +1,8 @@
 import React, { useMemo, useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
+import type { FixTagEntry } from '../../types/pages/build-fix';
 import type { DisplayFixProps } from '../../types/components/display-fix';
 import * as S from './DisplayFix.styled';
-import type { FixTagEntry } from '../../types/pages/build-fix';
 
 const HEADER_TAGS = ['8', '9', '35', '49', '56', '34', '52', '115', '128'];
 const TRAILER_TAGS = ['10'];

@@ -1,4 +1,4 @@
-import type { FixTagEntry } from '../services/fixMessage';
+import type { FixTagEntry } from '../pages/build-fix';
 
 export interface DisplayFixProps {
   entries: FixTagEntry[];
