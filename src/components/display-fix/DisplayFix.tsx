@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
-import type { FixTagEntry } from '../../types/services/fixMessage';
+import type { FixTagEntry } from '../../types/pages/build-fix';
 import type { DisplayFixProps } from '../../types/components/display-fix';
 import * as S from './DisplayFix.styled';
 
