@@ -18,6 +18,12 @@ export const Header = styled.div`
   margin-bottom: 1rem;
 `;
 
+export const Actions = styled.div`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+`;
+
 export const Title = styled.div`
   font-size: 1.1rem;
   font-weight: 600;
@@ -54,6 +60,37 @@ export const CopyButton = styled.button`
 
   &:disabled {
     opacity: 0.6;
+    cursor: not-allowed;
+  }
+`;
+
+export const IconButton = styled.button`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  background: #0ea5e9;
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 1rem;
+  line-height: 1;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-1px);
+    background: #0284c7;
+    box-shadow: 0 10px 25px -16px rgba(14, 165, 233, 0.9);
+  }
+
+  &:disabled {
+    opacity: 0.5;
     cursor: not-allowed;
   }
 `;
@@ -137,6 +174,9 @@ export const TagValue = styled.span<TagValueProps>`
 `;
 
 export const Remove = styled.button`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   width: 18px;
   height: 18px;
   border-radius: 50%;
@@ -148,10 +188,16 @@ export const Remove = styled.button`
   line-height: 1;
   margin-left: 0.4rem;
   opacity: 0;
-  transform: scale(0.8);
+  transform: scale(0);
   transition:
     opacity 0.2s ease,
     transform 0.2s ease;
+  transition-delay: var(--remove-delay, 120ms);
+  will-change: opacity, transform;
+
+  &:hover {
+    background: #e11d48;
+  }
 `;
 
 export const PreviewText = styled.p`
@@ -168,5 +214,6 @@ export const TagWrapper = styled(motion.div)`
   &:hover ${Remove} {
     opacity: 1;
     transform: scale(1);
+    transition-delay: 0ms;
   }
 `;

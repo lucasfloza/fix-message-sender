@@ -5,4 +5,5 @@ export interface DisplayFixProps {
   beginString?: string;
   onRemove: (tag: string) => void;
   onUpdate: (tag: string, value: string) => void;
+  onAddMessage?: (fixMessage: string, sohPayload: string) => void;
 }

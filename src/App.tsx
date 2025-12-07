@@ -7,7 +7,7 @@ import BuildFix from './pages/build-fix/BuildFix';
 
 function App() {
   return (
-    <Router>
+    <Router basename="/fix-message-sender">
       <Layout>
         <Routes>
           <Route path="/" element={<Home />} />

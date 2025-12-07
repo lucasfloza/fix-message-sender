@@ -1,8 +1,8 @@
 import React, { useMemo, useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
-import type { FixTagEntry } from '../../types/services/fixMessage';
 import type { DisplayFixProps } from '../../types/components/display-fix';
 import * as S from './DisplayFix.styled';
+import type { FixTagEntry } from '../../types/pages/build-fix';
 
 const HEADER_TAGS = ['8', '9', '35', '49', '56', '34', '52', '115', '128'];
 const TRAILER_TAGS = ['10'];
@@ -12,6 +12,7 @@ const DisplayFix: React.FC<DisplayFixProps> = ({
   beginString,
   onRemove,
   onUpdate,
+  onAddMessage,
 }) => {
   const [copyState, setCopyState] = useState<'idle' | 'copied' | 'error'>(
     'idle'
@@ -75,6 +76,12 @@ const DisplayFix: React.FC<DisplayFixProps> = ({
     }
   };
 
+  const handleAddMessage = () => {
+    if (!fixMessage) return;
+    onAddMessage?.(fixMessage, sohPayload);
+    setCopyState('idle');
+  };
+
   return (
     <S.Container>
       <S.Header>
@@ -84,17 +91,27 @@ const DisplayFix: React.FC<DisplayFixProps> = ({
             <S.Counter>({sortedEntries.length} tags)</S.Counter>
           )}
         </S.Title>
-        <S.CopyButton
-          type="button"
-          onClick={handleCopy}
-          disabled={!sortedEntries.length}
-        >
-          {copyState === 'copied'
-            ? 'Copiado!'
-            : copyState === 'error'
-              ? 'Tente novamente'
-              : 'Copiar FIX'}
-        </S.CopyButton>
+        <S.Actions>
+          <S.IconButton
+            type="button"
+            onClick={handleAddMessage}
+            disabled={!sortedEntries.length}
+            aria-label="Salvar mensagem"
+          >
+            +
+          </S.IconButton>
+          <S.CopyButton
+            type="button"
+            onClick={handleCopy}
+            disabled={!sortedEntries.length}
+          >
+            {copyState === 'copied'
+              ? 'Copiado!'
+              : copyState === 'error'
+                ? 'Tente novamente'
+                : 'Copiar FIX'}
+          </S.CopyButton>
+        </S.Actions>
       </S.Header>
 
       <S.Content aria-live="polite">
@@ -151,8 +168,6 @@ const DisplayFix: React.FC<DisplayFixProps> = ({
                     >
                       {entry.value}
                     </S.TagValue>
-                  </S.Tag>
-                  {entry.tag !== '8' && (
                     <S.Remove
                       type="button"
                       onClick={() => onRemove(entry.tag)}
@@ -160,7 +175,7 @@ const DisplayFix: React.FC<DisplayFixProps> = ({
                     >
                       x
                     </S.Remove>
-                  )}
+                  </S.Tag>
                 </S.TagWrapper>
               );
             })

@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import Input from '../../components/input/Input';
 import DisplayFix from '../../components/display-fix/DisplayFix';
+import DisplayMessages from '../../components/display-messages/DisplayMessages';
 import Card from '../../components/card/Card';
 import Button from '../../components/button/Button';
 import type {
@@ -13,6 +14,7 @@ import {
   MESSAGE_LABELS,
 } from '../../constants/pages/build-fix';
 import type { FixTag } from '../../types/data/fix-protocols';
+import type { SavedFixMessage } from '../../types/components/display-messages';
 import * as S from './BuildFix.styled';
 
 const buildMessageOptions = (market?: MarketOption): MessageOption[] => {
@@ -93,6 +95,7 @@ const BuildFix: React.FC = () => {
     buildRequiredEntries(messageOptions[0], selectedMarket?.beginString)
   );
   const [error, setError] = useState('');
+  const [savedMessages, setSavedMessages] = useState<SavedFixMessage[]>([]);
 
   const selectedMessage = useMemo(() => {
     if (!messageOptions.length) {
@@ -209,6 +212,25 @@ const BuildFix: React.FC = () => {
     setError('');
   };
 
+  const handleSaveMessage = (fixMessage: string, sohPayload: string) => {
+    const nextId =
+      typeof crypto !== 'undefined' && crypto.randomUUID
+        ? crypto.randomUUID()
+        : `msg-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+
+    const createdAt = new Date().toISOString();
+
+    setSavedMessages((prev) => [
+      {
+        id: nextId,
+        fixMessage,
+        sohPayload,
+        createdAt,
+      },
+      ...prev,
+    ]);
+  };
+
   const renderValueField = () => {
     if (!currentTag) {
       return null;
@@ -267,11 +289,14 @@ const BuildFix: React.FC = () => {
         </S.HeroText>
       </S.Hero>
 
+      <DisplayMessages messages={savedMessages} />
+
       <DisplayFix
         entries={entries}
         beginString={selectedMarket?.beginString}
         onRemove={handleRemoveTag}
         onUpdate={handleUpdateTagValue}
+        onAddMessage={handleSaveMessage}
       />
 
       <S.Grid>
