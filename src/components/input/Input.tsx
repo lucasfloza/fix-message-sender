@@ -1,10 +1,6 @@
 import React from 'react';
-import './Input.css';
-
-interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  label?: string;
-  error?: string;
-}
+import type { InputProps } from '../../types/components/input';
+import * as S from './Input.styled';
 
 const Input: React.FC<InputProps> = ({
   label,
@@ -13,14 +9,11 @@ const Input: React.FC<InputProps> = ({
   ...props
 }) => {
   return (
-    <div className="input-wrapper">
-      {label && <label className="input-label">{label}</label>}
-      <input
-        className={`input ${error ? 'input-error' : ''} ${className}`}
-        {...props}
-      />
-      {error && <span className="error-message">{error}</span>}
-    </div>
+    <S.Wrapper>
+      {label && <S.Label>{label}</S.Label>}
+      <S.Field className={className} $hasError={Boolean(error)} {...props} />
+      {error && <S.ErrorMessage>{error}</S.ErrorMessage>}
+    </S.Wrapper>
   );
 };
 

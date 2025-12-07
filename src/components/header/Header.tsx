@@ -1,30 +1,19 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import './Header.css';
+import * as S from './Header.styled';
 
 const Header: React.FC = () => {
   return (
-    <header className="header">
-      <div className="header-container">
-        <Link to="/" className="header-logo">
-          FIX Message Sender
-        </Link>
-        <nav className="header-nav">
-          <Link to="/" className="nav-link">
-            Home
-          </Link>
-          <Link to="/messages" className="nav-link">
-            Messages
-          </Link>
-          <Link to="/build" className="nav-link">
-            Build FIX
-          </Link>
-          <Link to="/about" className="nav-link">
-            About
-          </Link>
-        </nav>
-      </div>
-    </header>
+    <S.Header>
+      <S.HeaderContainer>
+        <S.HeaderLogo to="/">FIX Message Sender</S.HeaderLogo>
+        <S.HeaderNav>
+          <S.NavLink to="/">Home</S.NavLink>
+          <S.NavLink to="/messages">Messages</S.NavLink>
+          <S.NavLink to="/build">Build FIX</S.NavLink>
+          <S.NavLink to="/about">About</S.NavLink>
+        </S.HeaderNav>
+      </S.HeaderContainer>
+    </S.Header>
   );
 };
 

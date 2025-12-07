@@ -1,6 +1,9 @@
 import apiClient from '../api/client';
 import type { ApiResponse, PaginatedResponse } from '../types/api';
-import type { FixMessage, CreateFixMessageRequest } from '../types/fixMessage';
+import type {
+  FixMessage,
+  CreateFixMessageRequest,
+} from '../types/services/fixMessage';
 
 /**
  * Service for FIX Message operations

@@ -1,11 +1,6 @@
 import React from 'react';
-import './Button.css';
-
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'danger';
-  size?: 'small' | 'medium' | 'large';
-  loading?: boolean;
-}
+import type { ButtonProps } from '../../types/components/button';
+import * as S from './Button.styled';
 
 const Button: React.FC<ButtonProps> = ({
   children,
@@ -17,13 +12,16 @@ const Button: React.FC<ButtonProps> = ({
   ...props
 }) => {
   return (
-    <button
-      className={`btn btn-${variant} btn-${size} ${className}`}
+    <S.Button
+      className={className}
       disabled={disabled || loading}
+      $variant={variant}
+      $size={size}
+      $loading={loading}
       {...props}
     >
       {loading ? 'Loading...' : children}
-    </button>
+    </S.Button>
   );
 };
 

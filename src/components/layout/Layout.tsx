@@ -1,20 +1,19 @@
 import React from 'react';
 import Header from '../header/Header';
-import './Layout.css';
-
-interface LayoutProps {
-  children: React.ReactNode;
-}
+import type { LayoutProps } from '../../types/components/layout';
+import * as S from './Layout.styled';
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
-    <div className="layout">
+    <S.Layout>
       <Header />
-      <main className="main-content">{children}</main>
-      <footer className="footer">
-        <p>&copy; 2025 FIX Message Sender. All rights reserved.</p>
-      </footer>
-    </div>
+      <S.MainContent>{children}</S.MainContent>
+      <S.Footer>
+        <S.FooterText>
+          &copy; 2025 FIX Message Sender. All rights reserved.
+        </S.FooterText>
+      </S.Footer>
+    </S.Layout>
   );
 };
 

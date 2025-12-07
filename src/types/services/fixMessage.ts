@@ -1,8 +1,3 @@
-/**
- * FIX Message types
- * Define your domain models here
- */
-
 export interface FixMessage {
   id?: string;
   messageType: string;

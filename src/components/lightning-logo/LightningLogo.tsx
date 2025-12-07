@@ -1,10 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
-import './LightningLogo.css';
-
-type LightningLogoProps = {
-  className?: string;
-};
+import { useScroll, useTransform } from 'framer-motion';
+import type { LightningLogoProps } from '../../types/components/lightning-logo';
+import * as S from './LightningLogo.styled';
 
 const LightningLogo: React.FC<LightningLogoProps> = ({ className = '' }) => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -65,20 +62,10 @@ const LightningLogo: React.FC<LightningLogoProps> = ({ className = '' }) => {
     setCursor({ x: '50%', y: '50%' });
   };
 
-  const classes = [
-    'lightning-logo',
-    className,
-    isHovered ? 'is-hovered' : '',
-    isPressed ? 'is-pressed' : '',
-    isCharged ? 'is-charged' : '',
-  ]
-    .filter(Boolean)
-    .join(' ');
-
   return (
-    <motion.div
+    <S.Container
       ref={containerRef}
-      className={classes}
+      className={className}
       style={{
         ...cssVars,
         rotateX: tilt.y,
@@ -107,23 +94,30 @@ const LightningLogo: React.FC<LightningLogoProps> = ({ className = '' }) => {
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.96 }}
       transition={{ type: 'spring', stiffness: 200, damping: 15 }}
+      $isHovered={isHovered}
+      $isPressed={isPressed}
+      $isCharged={isCharged}
     >
-      <div className="lightning-logo__storm" aria-hidden="true">
-        <span className="lightning-logo__arc lightning-logo__arc--one" />
-        <span className="lightning-logo__arc lightning-logo__arc--two" />
-        <span className="lightning-logo__arc lightning-logo__arc--three" />
-      </div>
-      <div className="lightning-logo__sparks" aria-hidden="true">
-        <span />
-        <span />
-        <span />
-      </div>
-      <div className="lightning-logo__flash" aria-hidden="true" />
-      <div className="lightning-logo__glow" aria-hidden="true" />
+      <S.Storm aria-hidden="true" />
+      <S.Arc $duration="12s" $delay="2.8s" aria-hidden="true" />
+      <S.Arc $size="mid" $duration="8s" $delay="2.4s" aria-hidden="true" />
+      <S.Arc
+        $size="small"
+        $duration="6s"
+        $delay="2s"
+        $borderColor="rgba(248, 250, 252, 0.25)"
+        aria-hidden="true"
+      />
+      <S.Sparks aria-hidden="true">
+        <S.Spark $angle="-20deg" $delay="0.2s" />
+        <S.Spark $angle="8deg" $delay="0.9s" />
+        <S.Spark $angle="26deg" $delay="1.4s" />
+      </S.Sparks>
+      <S.Flash aria-hidden="true" />
+      <S.Glow aria-hidden="true" />
       {waveKey > 0 && (
-        <motion.span
+        <S.Shockwave
           key={waveKey}
-          className="lightning-logo__shockwave"
           aria-hidden="true"
           initial={{ scale: 0.3, opacity: 0.5 }}
           animate={{ scale: 1.8, opacity: 0 }}
@@ -131,16 +125,14 @@ const LightningLogo: React.FC<LightningLogoProps> = ({ className = '' }) => {
         />
       )}
       {isHovered && (
-        <motion.span
-          className="lightning-logo__cursor"
+        <S.Cursor
           aria-hidden="true"
           initial={{ opacity: 0 }}
           animate={{ opacity: 0.35 }}
           style={{ left: cursor.x, top: cursor.y }}
         />
       )}
-      <svg
-        className="lightning-logo__icon"
+      <S.Icon
         viewBox="0 0 120 120"
         role="img"
         aria-label="Animated lightning bolt"
@@ -160,8 +152,7 @@ const LightningLogo: React.FC<LightningLogoProps> = ({ className = '' }) => {
             </feMerge>
           </filter>
         </defs>
-        <motion.path
-          className="lightning-logo__bolt"
+        <S.Bolt
           d={boltPath}
           fill="url(#boltGradient)"
           filter="url(#boltGlow)"
@@ -171,16 +162,15 @@ const LightningLogo: React.FC<LightningLogoProps> = ({ className = '' }) => {
           }}
           transition={{ duration: 0.12 }}
         />
-        <path
-          className="lightning-logo__bolt-outline"
+        <S.BoltOutline
           d={boltPath}
           fill="none"
           stroke="#fff7ed"
           strokeWidth="2"
           strokeLinejoin="round"
         />
-      </svg>
-    </motion.div>
+      </S.Icon>
+    </S.Container>
   );
 };
 

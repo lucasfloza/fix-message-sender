@@ -1,21 +1,21 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Card from '../components/card/Card';
-import Button from '../components/button/Button';
-import LightningLogo from '../components/lightning-logo/LightningLogo';
-import './Home.css';
+import Card from '../../components/card/Card';
+import Button from '../../components/button/Button';
+import LightningLogo from '../../components/lightning-logo/LightningLogo';
+import * as S from './Home.styled';
 
 const Home: React.FC = () => {
   return (
-    <div className="home">
-      <div className="hero">
+    <S.Container>
+      <S.Hero>
         <LightningLogo />
-        <h1>Welcome to FIX Message Sender</h1>
-        <p className="hero-description">
+        <S.HeroTitle>Welcome to FIX Message Sender</S.HeroTitle>
+        <S.HeroDescription>
           A modern, scalable React application for sending and managing FIX
           messages to your Java REST API backend.
-        </p>
-        <div className="hero-actions">
+        </S.HeroDescription>
+        <S.HeroActions>
           <Link to="/messages">
             <Button size="large">View Messages</Button>
           </Link>
@@ -24,39 +24,39 @@ const Home: React.FC = () => {
               Build FIX
             </Button>
           </Link>
-        </div>
-      </div>
+        </S.HeroActions>
+      </S.Hero>
 
-      <div className="features">
+      <S.Features>
         <Card title="🚀 Modern Architecture">
-          <p>
+          <S.FeatureText>
             Built with React 19, TypeScript, and Vite for a fast and type-safe
             development experience.
-          </p>
+          </S.FeatureText>
         </Card>
 
         <Card title="🔌 API Integration">
-          <p>
+          <S.FeatureText>
             Seamless integration with Java REST APIs using Axios with
             interceptors for authentication and error handling.
-          </p>
+          </S.FeatureText>
         </Card>
 
         <Card title="📦 Scalable Structure">
-          <p>
+          <S.FeatureText>
             Organized folder structure following industry best practices for
             maintainability and scalability.
-          </p>
+          </S.FeatureText>
         </Card>
 
         <Card title="🎨 Reusable Components">
-          <p>
+          <S.FeatureText>
             Custom UI components built from scratch, ready to be extended and
             customized for your needs.
-          </p>
+          </S.FeatureText>
         </Card>
-      </div>
-    </div>
+      </S.Features>
+    </S.Container>
   );
 };
 

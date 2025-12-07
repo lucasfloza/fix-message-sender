@@ -1,18 +1,13 @@
 import React from 'react';
-import './Card.css';
-
-interface CardProps {
-  children: React.ReactNode;
-  title?: string;
-  className?: string;
-}
+import type { CardProps } from '../../types/components/card';
+import * as S from './Card.styled';
 
 const Card: React.FC<CardProps> = ({ children, title, className = '' }) => {
   return (
-    <div className={`card ${className}`}>
-      {title && <div className="card-header">{title}</div>}
-      <div className="card-body">{children}</div>
-    </div>
+    <S.Card className={className}>
+      {title && <S.CardHeader>{title}</S.CardHeader>}
+      <S.CardBody>{children}</S.CardBody>
+    </S.Card>
   );
 };
 

@@ -1,82 +1,19 @@
 import React, { useMemo, useState } from 'react';
-import Card from '../components/card/Card';
-import Button from '../components/button/Button';
-import Input from '../components/input/Input';
-import { FIX_4_4_B3, type FixTag } from '../data/fixProtocols';
-import './BuildFix.css';
-
-type TagEntry = {
-  tag: string;
-  value: string;
-  name: string;
-  description?: string;
-};
-
-type FixMessageMap = Record<string, { msgType: string; tags: FixTag[] }>;
-
-type MarketOption = {
-  id: string;
-  label: string;
-  description: string;
-  beginString: string;
-  disabled?: boolean;
-  messages?: FixMessageMap;
-};
-
-type MessageOption = {
-  key: string;
-  label: string;
-  note?: string;
-  msgType: string;
-  tags: FixTag[];
-};
-
-const MESSAGE_LABELS: Record<string, { label: string; note?: string }> = {
-  newOrderSingle: {
-    label: 'New Order Single (35=D)',
-    note: 'Inserção de ordens regulares via Order Entry',
-  },
-  orderCancelRequest: {
-    label: 'Order Cancel Request (35=F)',
-    note: 'Solicitação de cancelamento de ordens vivas',
-  },
-  orderCancelReplaceRequest: {
-    label: 'Order Cancel/Replace (35=G)',
-    note: 'Alteração de ordens (amenda quantidade/preço)',
-  },
-  executionReport: {
-    label: 'Execution Report (35=8)',
-    note: 'Confirmações enviadas pela bolsa',
-  },
-  orderCancelReject: {
-    label: 'Order Cancel Reject (35=9)',
-    note: 'Rejeições de cancelamento',
-  },
-};
-
-const MARKET_OPTIONS: MarketOption[] = [
-  {
-    id: 'b3',
-    label: 'B3',
-    description: 'Renda variável e derivativos negociados na B3 (FIX 4.4).',
-    beginString: 'FIX.4.4',
-    messages: FIX_4_4_B3,
-  },
-  {
-    id: 'baseExchange',
-    label: 'Base Exchange',
-    description: 'Integração proprietária baseada em FIX 4.2.',
-    beginString: 'FIX.4.2',
-    disabled: true,
-  },
-  {
-    id: 'a5x',
-    label: 'A5X Global',
-    description: 'Roteamento multi-market (FIX 5.0 SP2).',
-    beginString: 'FIXT.1.1',
-    disabled: true,
-  },
-];
+import Input from '../../components/input/Input';
+import DisplayFix from '../../components/display-fix/DisplayFix';
+import Card from '../../components/card/Card';
+import Button from '../../components/button/Button';
+import type {
+  FixTagEntry,
+  MarketOption,
+  MessageOption,
+} from '../../types/pages/build-fix';
+import {
+  MARKET_OPTIONS,
+  MESSAGE_LABELS,
+} from '../../constants/pages/build-fix';
+import type { FixTag } from '../../types/data/fix-protocols';
+import * as S from './BuildFix.styled';
 
 const buildMessageOptions = (market?: MarketOption): MessageOption[] => {
   if (!market?.messages) {
@@ -102,6 +39,33 @@ const getDefaultValueForTag = (tag?: FixTag) => {
   return '';
 };
 
+const buildRequiredEntries = (
+  message?: MessageOption,
+  beginString?: string
+): FixTagEntry[] => {
+  if (!message) {
+    return [];
+  }
+
+  return message.tags
+    .filter((tag) => tag.required)
+    .map((tag) => {
+      const isMsgType = tag.tag === '35';
+      const isBeginString = tag.tag === '8';
+      return {
+        tag: tag.tag,
+        value: isMsgType
+          ? message.msgType
+          : isBeginString && beginString
+            ? beginString
+            : '',
+        name: tag.name ?? `Tag ${tag.tag}`,
+        description: tag.description,
+        required: true,
+      };
+    });
+};
+
 const BuildFix: React.FC = () => {
   const [marketId, setMarketId] = useState(MARKET_OPTIONS[0].id);
   const selectedMarket = useMemo(
@@ -125,11 +89,10 @@ const BuildFix: React.FC = () => {
   const [tagValue, setTagValue] = useState(() =>
     getDefaultValueForTag(messageOptions[0]?.tags[0])
   );
-  const [entries, setEntries] = useState<TagEntry[]>([]);
-  const [error, setError] = useState('');
-  const [copyState, setCopyState] = useState<'idle' | 'copied' | 'error'>(
-    'idle'
+  const [entries, setEntries] = useState<FixTagEntry[]>(() =>
+    buildRequiredEntries(messageOptions[0], selectedMarket?.beginString)
   );
+  const [error, setError] = useState('');
 
   const selectedMessage = useMemo(() => {
     if (!messageOptions.length) {
@@ -147,19 +110,6 @@ const BuildFix: React.FC = () => {
     }
     return selectedMessage.tags.find((tag) => tag.tag === selectedTag);
   }, [selectedMessage, selectedTag]);
-
-  const orderedEntries = useMemo(
-    () => [...entries].sort((a, b) => Number(a.tag) - Number(b.tag)),
-    [entries]
-  );
-
-  const fixPreview = useMemo(() => {
-    const begin = selectedMarket ? `8=${selectedMarket.beginString}` : '';
-    const body = orderedEntries.map((entry) => `${entry.tag}=${entry.value}`);
-    return [begin, ...body].filter(Boolean).join(' | ');
-  }, [orderedEntries, selectedMarket]);
-
-  const sohMessage = fixPreview.replace(/ \| /g, '\u0001');
 
   const applyMessageDefaults = (message?: MessageOption) => {
     const firstTag = message?.tags[0];
@@ -180,7 +130,7 @@ const BuildFix: React.FC = () => {
     setMarketId(nextId);
     setMessageKey(nextMessage?.key ?? '');
     applyMessageDefaults(nextMessage);
-    setEntries([]);
+    setEntries(buildRequiredEntries(nextMessage, nextMarket?.beginString));
     setError('');
   };
 
@@ -189,7 +139,7 @@ const BuildFix: React.FC = () => {
     const nextMessage = messageOptions.find((option) => option.key === nextKey);
     setMessageKey(nextKey);
     applyMessageDefaults(nextMessage);
-    setEntries([]);
+    setEntries(buildRequiredEntries(nextMessage, selectedMarket?.beginString));
     setError('');
   };
 
@@ -235,6 +185,7 @@ const BuildFix: React.FC = () => {
           value: tagValue.trim(),
           name: entryName,
           description: currentTag.description,
+          required: Boolean(currentTag.required),
         },
       ];
     });
@@ -249,20 +200,13 @@ const BuildFix: React.FC = () => {
     setEntries((prev) => prev.filter((entry) => entry.tag !== tag));
   };
 
-  const handleCopy = async () => {
-    if (!fixPreview) {
-      return;
-    }
-
-    try {
-      await navigator.clipboard.writeText(sohMessage);
-      setCopyState('copied');
-      setTimeout(() => setCopyState('idle'), 2200);
-    } catch (error) {
-      console.error('Erro ao copiar FIX message', error);
-      setCopyState('error');
-      setTimeout(() => setCopyState('idle'), 2200);
-    }
+  const handleUpdateTagValue = (tag: string, newValue: string) => {
+    setEntries((prev) =>
+      prev.map((entry) =>
+        entry.tag === tag ? { ...entry, value: newValue } : entry
+      )
+    );
+    setError('');
   };
 
   const renderValueField = () => {
@@ -272,9 +216,9 @@ const BuildFix: React.FC = () => {
 
     if (currentTag.allowedValues?.length) {
       return (
-        <label className="build-fix__field">
-          <span>Valor permitido</span>
-          <select
+        <S.Field>
+          <S.FieldLabel>Valor permitido</S.FieldLabel>
+          <S.Select
             value={tagValue}
             onChange={(event) => {
               setTagValue(event.target.value);
@@ -287,8 +231,8 @@ const BuildFix: React.FC = () => {
                 {option.label ? ` — ${option.label}` : ''}
               </option>
             ))}
-          </select>
-        </label>
+          </S.Select>
+        </S.Field>
       );
     }
 
@@ -310,26 +254,35 @@ const BuildFix: React.FC = () => {
   };
 
   return (
-    <div className="build-fix">
-      <section className="build-fix__hero">
-        <p className="build-fix__kicker">Build FIX</p>
-        <h1>Monte sua mensagem FIX em segundos</h1>
-        <p>
+    <S.Container>
+      <S.Hero>
+        <S.Kicker>Build FIX</S.Kicker>
+        <S.ResponsiveHeroTitle>
+          Monte sua mensagem FIX em segundos
+        </S.ResponsiveHeroTitle>
+        <S.HeroText>
           Selecione o mercado, defina o tipo de mensagem FIX, escolha as tags
           necessárias, valide os valores permitidos e copie o payload formatado
           para enviar pelo seu canal favorito.
-        </p>
-      </section>
+        </S.HeroText>
+      </S.Hero>
 
-      <div className="build-fix__grid">
+      <DisplayFix
+        entries={entries}
+        beginString={selectedMarket?.beginString}
+        onRemove={handleRemoveTag}
+        onUpdate={handleUpdateTagValue}
+      />
+
+      <S.Grid>
         <Card title="1. Escolha o mercado">
-          <p className="build-fix__card-description">
+          <S.CardDescription>
             Defina a bolsa para carregarmos o protocolo e as mensagens FIX
             corretas.
-          </p>
-          <label className="build-fix__field">
-            <span>Mercado</span>
-            <select value={marketId} onChange={handleMarketChange}>
+          </S.CardDescription>
+          <S.Field>
+            <S.FieldLabel>Mercado</S.FieldLabel>
+            <S.Select value={marketId} onChange={handleMarketChange}>
               {MARKET_OPTIONS.map((market) => (
                 <option
                   key={market.id}
@@ -340,23 +293,21 @@ const BuildFix: React.FC = () => {
                   {market.disabled ? ' (em breve)' : ''}
                 </option>
               ))}
-            </select>
-          </label>
+            </S.Select>
+          </S.Field>
           {selectedMarket && (
-            <p className="build-fix__protocol-hint">
-              {selectedMarket.description}
-            </p>
+            <S.ProtocolHint>{selectedMarket.description}</S.ProtocolHint>
           )}
         </Card>
 
         <Card title="2. Tipo da mensagem (35=...)">
-          <p className="build-fix__card-description">
+          <S.CardDescription>
             Cada tipo exige um conjunto específico de tags. Selecione o fluxo
             desejado.
-          </p>
-          <label className="build-fix__field">
-            <span>Mensagem FIX</span>
-            <select
+          </S.CardDescription>
+          <S.Field>
+            <S.FieldLabel>Mensagem FIX</S.FieldLabel>
+            <S.Select
               value={selectedMessage ? messageKey : ''}
               onChange={handleMessageChange}
               disabled={!selectedMessage}
@@ -367,21 +318,21 @@ const BuildFix: React.FC = () => {
                   {option.note ? ` • ${option.note}` : ''}
                 </option>
               ))}
-            </select>
-          </label>
+            </S.Select>
+          </S.Field>
           {selectedMessage?.note && (
-            <p className="build-fix__protocol-hint">{selectedMessage.note}</p>
+            <S.ProtocolHint>{selectedMessage.note}</S.ProtocolHint>
           )}
         </Card>
 
         <Card title="3. Selecione a tag">
-          <p className="build-fix__card-description">
+          <S.CardDescription>
             Use tags específicas para o fluxo escolhido e informe os valores
             válidos.
-          </p>
-          <label className="build-fix__field">
-            <span>Tag FIX</span>
-            <select
+          </S.CardDescription>
+          <S.Field>
+            <S.FieldLabel>Tag FIX</S.FieldLabel>
+            <S.Select
               value={selectedTag}
               onChange={handleTagChange}
               disabled={!selectedMessage}
@@ -392,85 +343,38 @@ const BuildFix: React.FC = () => {
                   {tag.name ? ` — ${tag.name}` : ''}
                 </option>
               ))}
-            </select>
-          </label>
+            </S.Select>
+          </S.Field>
 
           {currentTag && (
-            <div className="build-fix__tag-details">
-              <h3>
+            <S.TagDetails>
+              <S.TagTitle>
                 Tag {currentTag.tag}
                 {currentTag.name ? ` • ${currentTag.name}` : ''}
-              </h3>
-              <p>{currentTag.description}</p>
+              </S.TagTitle>
+              <S.TagDescription>{currentTag.description}</S.TagDescription>
               {currentTag.allowedValues && (
-                <div className="build-fix__chip-list">
+                <S.ChipList>
                   {currentTag.allowedValues.map((option) => (
-                    <span key={option.value} className="build-fix__chip">
+                    <S.Chip key={option.value}>
                       {option.value}
                       {option.label ? ` — ${option.label}` : ''}
-                    </span>
+                    </S.Chip>
                   ))}
-                </div>
+                </S.ChipList>
               )}
               {renderValueField()}
               {error && currentTag.allowedValues && (
-                <p className="build-fix__form-error">{error}</p>
+                <S.FormError>{error}</S.FormError>
               )}
               <Button size="small" onClick={handleAddTag}>
                 Adicionar tag
               </Button>
-            </div>
+            </S.TagDetails>
           )}
         </Card>
-
-        <Card title="4. Tags selecionadas">
-          {entries.length === 0 ? (
-            <p className="build-fix__empty">Nenhuma tag adicionada ainda.</p>
-          ) : (
-            <ul className="build-fix__list">
-              {orderedEntries.map((entry) => (
-                <li key={entry.tag}>
-                  <div>
-                    <strong>{entry.tag}</strong> = {entry.value}
-                    <span>{entry.name}</span>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveTag(entry.tag)}
-                  >
-                    Remover
-                  </button>
-                </li>
-              ))}
-            </ul>
-          )}
-        </Card>
-
-        <Card title="5. Copie o payload">
-          <p className="build-fix__card-description">
-            Mostramos o separador <code>|</code> apenas para visualização. Ao
-            copiar usamos o caractere SOH (\u0001).
-          </p>
-          <div className="build-fix__preview">
-            {fixPreview
-              ? fixPreview
-              : 'Adicione tags para visualizar sua mensagem.'}
-          </div>
-          <Button
-            variant="secondary"
-            disabled={!fixPreview}
-            onClick={handleCopy}
-          >
-            {copyState === 'copied' ? 'Copiado!' : 'Copiar mensagem'}
-          </Button>
-          {copyState === 'error' && (
-            <p className="build-fix__error">
-              Não foi possível copiar. Tente novamente.
-            </p>
-          )}
-        </Card>
-      </div>
-    </div>
+      </S.Grid>
+    </S.Container>
   );
 };
 

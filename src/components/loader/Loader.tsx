@@ -1,10 +1,6 @@
 import React from 'react';
-import './Loader.css';
-
-interface LoaderProps {
-  size?: 'small' | 'medium' | 'large';
-  fullScreen?: boolean;
-}
+import type { LoaderProps } from '../../types/components/loader';
+import * as S from './Loader.styled';
 
 const Loader: React.FC<LoaderProps> = ({
   size = 'medium',
@@ -12,13 +8,13 @@ const Loader: React.FC<LoaderProps> = ({
 }) => {
   if (fullScreen) {
     return (
-      <div className="loader-fullscreen">
-        <div className={`spinner spinner-${size}`}></div>
-      </div>
+      <S.Fullscreen>
+        <S.Spinner $size={size} />
+      </S.Fullscreen>
     );
   }
 
-  return <div className={`spinner spinner-${size}`}></div>;
+  return <S.Spinner $size={size} />;
 };
 
 export default Loader;

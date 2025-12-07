@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import Card from '../components/card/Card';
-import Button from '../components/button/Button';
-import Input from '../components/input/Input';
-import Loader from '../components/loader/Loader';
-import { useAsync } from '../hooks/useAsync';
-import fixMessageService from '../services/fixMessageService';
-import type { CreateFixMessageRequest } from '../types/fixMessage';
-import './Messages.css';
+import Card from '../../components/card/Card';
+import Button from '../../components/button/Button';
+import Input from '../../components/input/Input';
+import Loader from '../../components/loader/Loader';
+import { useAsync } from '../../hooks/useAsync';
+import type { CreateFixMessageRequest } from '../../types/services/fixMessage';
+import fixMessageService from '../../services/fixMessageService';
+import * as S from './Messages.styled';
 
 const Messages: React.FC = () => {
   const [formData, setFormData] = useState<CreateFixMessageRequest>({
@@ -46,8 +46,8 @@ const Messages: React.FC = () => {
   };
 
   return (
-    <div className="messages">
-      <h1>Send FIX Message</h1>
+    <S.Container>
+      <S.Title>Send FIX Message</S.Title>
 
       <Card>
         <form onSubmit={handleSubmit}>
@@ -78,31 +78,30 @@ const Messages: React.FC = () => {
             required
           />
 
-          <div className="input-wrapper">
-            <label className="input-label">Message Content</label>
-            <textarea
+          <div>
+            <S.TextAreaLabel>Message Content</S.TextAreaLabel>
+            <S.TextArea
               name="content"
               value={formData.content}
               onChange={handleChange}
-              className="textarea"
               placeholder="FIX message content"
               rows={5}
               required
             />
           </div>
 
-          {error && <div className="error-alert">{error}</div>}
+          {error && <S.ErrorAlert>{error}</S.ErrorAlert>}
 
-          <div className="form-actions">
+          <S.FormActions>
             <Button type="submit" loading={loading} disabled={loading}>
               Send Message
             </Button>
-          </div>
+          </S.FormActions>
         </form>
       </Card>
 
       {loading && <Loader fullScreen />}
-    </div>
+    </S.Container>
   );
 };
 

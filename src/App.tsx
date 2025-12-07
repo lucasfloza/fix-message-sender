@@ -1,9 +1,9 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Layout from './components/layout/Layout';
-import Home from './pages/Home';
-import Messages from './pages/Messages';
-import About from './pages/About';
-import BuildFix from './pages/BuildFix';
+import Home from './pages/home/Home';
+import Messages from './pages/messages/Messages';
+import About from './pages/about/About';
+import BuildFix from './pages/build-fix/BuildFix';
 
 function App() {
   return (
